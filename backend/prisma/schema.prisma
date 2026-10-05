@@ -15,7 +15,8 @@ datasource db {
 model User {
   id           String        @id @default(cuid())
   emailAddress String        @unique
-  name         String?       @db.VarChar(255)
+  password     String
+  name         String       @db.VarChar(255)
   userType     String        @db.VarChar(255)
   postedJobs   Job[]         @relation("PostedJobs")
   applications Application[]
