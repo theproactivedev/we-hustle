@@ -1,11 +1,12 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import { config } from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 // Import Routes
 import authRouter from './routes/auth.js';
 // import usersRouter from './routes/users.js';
-// import jobsRouter from './routes/jobs.js';
+import jobsRouter from './routes/jobs.js';
 // import applicationsRouter from './routes/applications.js';
 import { disconnectDB } from './config/db.js';
 
@@ -17,6 +18,7 @@ const port = process.env.PORT || 5001;
 // Middleware to parse JSON payloads
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // Middleware to parse cookies
 
 // Basic Route with typed request and response parameters
 app.get('/', (req: Request, res: Response) => {
@@ -26,7 +28,7 @@ app.get('/', (req: Request, res: Response) => {
 // API Routes
 app.use('/api/auth', authRouter);
 // app.use('/api/users', usersRouter);
-// app.use('/api/jobs', jobsRouter);
+app.use('/api/jobs', jobsRouter);
 // app.use('/api/applications', applicationsRouter);
 
 const server = app.listen(port, () => {

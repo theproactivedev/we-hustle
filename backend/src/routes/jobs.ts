@@ -1,9 +1,10 @@
 import express from 'express';
+import { createJob, getJobs } from '../controllers/jobs.js';
 
 const router = express.Router();
 
-router.get('/jobs', (req, res) => {
-  return res.json({ message: 'Hello from the jobs route!' });
-});
+router.post('/new', createJob);
 
+router.get('/', getJobs);
+  
 export default router;

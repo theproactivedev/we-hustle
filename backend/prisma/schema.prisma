@@ -33,7 +33,7 @@ model Job {
 
   postedAt   DateTime @default(now())
   postedBy   User     @relation("PostedJobs", fields: [postedById], references: [id])
-  postedById String // automatically set by postedBy relation when a Job is created
+  postedById String
 
   applications Application[]
 }
