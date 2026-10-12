@@ -1,7 +1,6 @@
 import Footer from "./Footer";
 import Header from "./Header";
 import JobBoard from "./JobBoard";
-import { jobs } from "./jobs";
 
 const stats = [["142", "open roles"], ["58", "hiring teams"], ["$4.8k", "median monthly pay"]];
 const steps = [
@@ -18,10 +17,10 @@ export default function App() {
         <section className="relative overflow-hidden border-b border-line">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />
           <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-            <p className="inline-flex items-center gap-2 font-mono text-sm text-teal-400">
+            {/* <p className="inline-flex items-center gap-2 font-mono text-sm text-teal-400">
               <span className="pulse-dot size-2 animate-pulse rounded-full bg-teal-400 shadow-[0_0_10px_var(--color-teal-400)]" />
               {jobs.length} new roles this week
-            </p>
+            </p> */}
             <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">Find a job in the stack you already ship.</h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-mute sm:text-lg">Every listing shows the tech, the salary range and whether it&apos;s remote. Search below, save roles, and apply in a few clicks.</p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -39,7 +38,7 @@ export default function App() {
           </div>
         </section>
 
-        <JobBoard jobs={jobs} />
+        <JobBoard />
 
         <section className="border-y border-line bg-panel/60" aria-labelledby="hire-heading">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">

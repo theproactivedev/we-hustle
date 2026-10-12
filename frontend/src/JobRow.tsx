@@ -1,4 +1,5 @@
-import type { Job } from "./jobs";
+import type { Job } from "./dataTypes";
+
 
 type Props = { job: Job; saved?: boolean; onSave?: () => void; preview?: boolean };
 
@@ -15,22 +16,22 @@ export default function JobRow({ job, saved = false, onSave, preview }: Props) {
               <a href={`/jobs/${job.id}`} className="after:absolute after:inset-0 focus-visible:outline-offset-0">{job.title}</a>
             )}
           </h3>
-          {job.isNew && <span className="border border-teal-400/50 px-1.5 py-0.5 font-mono text-xs text-teal-400">New</span>}
+          {/* {job.isNew && <span className="border border-teal-400/50 px-1.5 py-0.5 font-mono text-xs text-teal-400">New</span>} */}
         </div>
         <p className="mt-0.5 text-sm text-mute">
-          {job.company || "Company"}, {job.location || "Location"}{job.remote ? " (remote ok)" : ""}
+          {job.company || "Company"}, {job.location || "Location"}
         </p>
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label="Tech stack">
+        {/* <ul className="mt-3 flex flex-wrap gap-2" aria-label="Tech stack">
           {job.stack.map((t) => (
             <li key={t} className="border border-line px-2 py-0.5 font-mono text-xs text-mute transition-colors group-hover:border-teal-400/40">{t}</li>
           ))}
-        </ul>
+        </ul> */}
       </div>
 
       <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:justify-center">
         <div className="font-mono text-sm sm:text-right">
           <p className="text-teal-400">{job.salary || "Salary range"}</p>
-          <p className="text-mute">{job.posted}</p>
+          <p className="text-mute">{new Date(job.postedAt).toLocaleDateString()}</p>
         </div>
         {!preview && (
           <div className="relative z-10 flex items-center gap-2">
