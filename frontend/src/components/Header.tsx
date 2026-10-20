@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 
 
 function LogoMark() {
@@ -21,8 +22,8 @@ export default function Header() {
         </a>
 
         <nav aria-label="Primary" className="flex items-center gap-4 text-sm sm:gap-7 sm:text-[15px]">
-          <a href="/register" className="link">Register</a>
-          <a href="/sign-in" className="link">Sign In</a>
+          <Link to="/register" className="link">Register</Link>
+          <Link to="/sign-in" className="link">Sign In</Link>
         </nav>
       </div>
     </header>

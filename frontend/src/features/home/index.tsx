@@ -1,5 +1,5 @@
-import Footer from "./Footer";
-import Header from "./Header";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
 import JobBoard from "./JobBoard";
 
 const stats = [["142", "open roles"], ["58", "hiring teams"], ["$4.8k", "median monthly pay"]];
@@ -9,7 +9,7 @@ const steps = [
   ["Review applicants", "Applications land in your inbox, tagged with the skills they match."],
 ];
 
-export default function App() {
+export default function Home() {
   return (
     <>
       <Header />

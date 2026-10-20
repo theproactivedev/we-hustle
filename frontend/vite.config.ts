@@ -1,12 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite' // <-- Import Tailwind
+import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 // https://vite.dev
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(), // <-- Add Tailwind plugin here
+    tanstackRouter(),
   ],
   server: {
     port: 3000,
