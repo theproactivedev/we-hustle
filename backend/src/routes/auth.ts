@@ -11,6 +11,6 @@ router.post("/login", login);
 
 router.post("/logout", authMiddleware, logout);
 
-router.post("/me", getCurrentUser);
+router.get("/me", getCurrentUser);
 
 export default router;
