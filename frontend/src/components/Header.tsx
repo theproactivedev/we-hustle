@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useCurrentUser } from "../features/auth/queries";
+import { useLogout } from "../features/auth/mutations";
 
 
 function LogoMark() {
@@ -11,6 +13,15 @@ function LogoMark() {
 }
 
 export default function Header() {
+  const { data: user } = useCurrentUser();
+  const logoutMutation = useLogout();
+  const navigate = useNavigate();
+
+  const logoutUser = async() => {
+    await logoutMutation.mutateAsync();
+    await navigate({ to: "/" })
+  }
+
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-void/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -22,8 +33,19 @@ export default function Header() {
         </a>
 
         <nav aria-label="Primary" className="flex items-center gap-4 text-sm sm:gap-7 sm:text-[15px]">
-          <Link to="/register" className="link">Register</Link>
-          <Link to="/sign-in" className="link">Sign In</Link>
+          {user
+            ? (
+              <>
+                <Link to="/jobs" className="link">Jobs</Link>
+                <a onClick={logoutUser} className="link">Sign Out</a>
+              </>
+            ): (
+              <>
+                <Link to="/register" className="link">Register</Link>
+                <Link to="/sign-in" className="link">Sign In</Link>
+              </>
+            )
+          }
         </nav>
       </div>
     </header>
