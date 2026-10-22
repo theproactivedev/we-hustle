@@ -33,7 +33,7 @@ export default function Header() {
         </a>
 
         <nav aria-label="Primary" className="flex items-center gap-4 text-sm sm:gap-7 sm:text-[15px]">
-          {user
+          {user?.id
             ? (
               <>
                 <Link to="/jobs" className="link">Jobs</Link>

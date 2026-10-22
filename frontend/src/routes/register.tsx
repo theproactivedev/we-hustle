@@ -211,7 +211,7 @@ function RegisterPage() {
                   </p>
                 )}
 
-                <button type="submit" className="btn btn-primary w-full py-3" disabled={!hasAllFields || mutation.isPending}>
+                <button type="submit" className="btn btn-primary w-full py-3 cursor-pointer disabled:cursor-not-allowed disabled:bg-line disabled:text-mute disabled:opacity-60 disabled:hover:bg-line disabled:hover:shadow-none" disabled={!hasAllFields || mutation.isPending}>
                   {mutation.isPending ? "Creating your account..." : "Create account"}
                   {!mutation.isPending && <span aria-hidden="true">→</span>}
                 </button>

@@ -1,9 +1,24 @@
 type AuthUser = {
   id: string;
   name: string;
-  email: string;
+  emailAddress: string;
+}
+
+type SignInPayload = {
+  emailAddress: string;
+  password: string;
+}
+
+type SignInResponse = {
+  message: string;
+  data: {
+    user: AuthUser;
+    token: string;
+  };
 }
 
 export type {
-  AuthUser
+  AuthUser,
+  SignInPayload,
+  SignInResponse,
 }
