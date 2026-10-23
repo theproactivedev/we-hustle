@@ -10,13 +10,10 @@ type RegisterResponse = {
     user: {
       id: string;
       emailAddress: string;
-      name:        string;
-    },
+      name: string;
+    };
     token: string;
-  }
+  };
 };
 
-export type {
-  RegisterPayload,
-  RegisterResponse
-}
+export type { RegisterPayload, RegisterResponse };
