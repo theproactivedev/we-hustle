@@ -63,6 +63,47 @@ const getJobs = async (req: Request, res: Response) => {
   }
 };
 
+const getJobById = async (req: Request, res: Response) => {
+  try {
+    const jobId = req.params.jobId;
+    if (typeof jobId !== "string") {
+      return res.status(400).json({ message: "Job ID is required" });
+    }
+
+    const job = await prisma.job.findUnique({
+      where: { id: jobId },
+      select: {
+        id: true,
+        title: true,
+        company: true,
+        location: true,
+        jobType: true,
+        description: true,
+        salary: true,
+        postedAt: true,
+      },
+    });
+
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
+    const applicationCount = await prisma.application.count({
+      where: { jobId },
+    });
+
+    return res.status(200).json({
+      data: {
+        ...job,
+        applicationCount,
+      },
+    });
+  } catch (error) {
+    console.error("Error retrieving job:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const createJob = async (req: Request, res: Response) => {
   try {
     const { title, description, company, location, jobType, salary, postedById } = req.body;
@@ -96,4 +137,5 @@ const createJob = async (req: Request, res: Response) => {
 
 export {
   createJob,
+  getJobById,
   getJobs};
