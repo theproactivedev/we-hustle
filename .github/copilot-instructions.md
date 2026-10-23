@@ -15,3 +15,7 @@
 - Always use arrow functions (`const helper = () => {}`) for any internal event handlers, state setters, hooks, effects, or utilities defined inside the component scope.
 - Use arrow functions with implicit returns for inline JSX mapping, filtering, or simple callbacks (e.g., `.map(item => ...)`).
 - Avoid using the `function` keyword inside a component body.
+
+## Code Style & Formatting
+- **Braces:** Always wrap block bodies and control flow structures (such as `if`, `else`, `for`, `while`, `do`, `switch`) in curly braces `{}`.
+- **Single Statements:** Never omit curly braces, even if a block contains only a single statement or fits on a single line. 
