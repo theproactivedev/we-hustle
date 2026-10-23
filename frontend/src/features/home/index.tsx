@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import JobBoard from "./JobBoard";
@@ -24,8 +25,8 @@ export default function Home() {
             <h1 className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">Find a job in the stack you already ship.</h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-mute sm:text-lg">Every listing shows the tech, the salary range and whether it&apos;s remote. Search below, save roles, and apply in a few clicks.</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#jobs" className="btn btn-primary">Browse jobs</a>
-              <a href="/jobs/new" className="btn btn-ghost">Post a job</a>
+              <Link to="/jobs" className="btn btn-primary">Browse jobs</Link>
+              {/* <Link to="/jobs/new" className="btn btn-ghost">Post a job</Link> */}
             </div>
             <dl className="mt-12 grid max-w-2xl grid-cols-3 border-l border-line font-mono">
               {stats.map(([n, l]) => (

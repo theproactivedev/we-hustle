@@ -25,12 +25,12 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-void/80 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a href="/" className="flex items-center gap-2.5 text-teal-400" aria-label="Stackhire home">
+        <Link to="/" className="flex items-center gap-2.5 text-teal-400" aria-label="Stackhire home">
           <LogoMark />
           <span className="font-display text-lg font-semibold tracking-tight text-ink max-[420px]:sr-only">
             Stackhire
           </span>
-        </a>
+        </Link>
 
         <nav aria-label="Primary" className="flex items-center gap-4 text-sm sm:gap-7 sm:text-[15px]">
           {user?.id

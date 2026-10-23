@@ -1,4 +1,5 @@
-import type { Job } from "./dataTypes";
+import { Link } from "@tanstack/react-router";
+import type { Job } from "../../dataTypes";
 
 
 type Props = { job: Job; saved?: boolean; onSave?: () => void; preview?: boolean };
@@ -13,25 +14,43 @@ export default function JobRow({ job, saved = false, onSave, preview }: Props) {
           <h3 className="font-display text-lg font-semibold leading-snug transition-colors group-hover:text-teal-400">
             {preview ? job.title || "Job title" : (
               /* stretched link: whole row is clickable, buttons sit above it */
-              <a href={`/jobs/${job.id}`} className="after:absolute after:inset-0 focus-visible:outline-offset-0">{job.title}</a>
+              <Link
+                to="/jobs/$jobId"
+                params={{ jobId: job.id }}
+                className="after:absolute after:inset-0 focus-visible:outline-offset-0"
+              >
+                {job.title}
+              </Link>
             )}
           </h3>
-          {/* {job.isNew && <span className="border border-teal-400/50 px-1.5 py-0.5 font-mono text-xs text-teal-400">New</span>} */}
+          <span className="border border-teal-400/50 px-1.5 py-0.5 font-mono text-xs text-teal-400">{job.jobType}</span>
         </div>
         <p className="mt-0.5 text-sm text-mute">
-          {job.company || "Company"}, {job.location || "Location"}
+          {job.company || "Company"}
         </p>
+        <p className="mt-0.5 text-sm text-mute">
+          {job.location || "Location"}
+        </p>
+
+        {/* TODO: Add stack to Job model */}
         {/* <ul className="mt-3 flex flex-wrap gap-2" aria-label="Tech stack">
-          {job.stack.map((t) => (
+          {["Remote", "Development"].map((t) => (
             <li key={t} className="border border-line px-2 py-0.5 font-mono text-xs text-mute transition-colors group-hover:border-teal-400/40">{t}</li>
           ))}
         </ul> */}
+
       </div>
 
       <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end sm:justify-center">
         <div className="font-mono text-sm sm:text-right">
           <p className="text-teal-400">{job.salary || "Salary range"}</p>
-          <p className="text-mute">{new Date(job.postedAt).toLocaleDateString()}</p>
+          <p className="text-mute">
+            {new Date(job.postedAt).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </p>
         </div>
         {!preview && (
           <div className="relative z-10 flex items-center gap-2">
