@@ -2,10 +2,61 @@ import type { Request, Response } from "express";
 
 import { prisma } from "../lib/prisma.js";
 
+const getQueryString = (value: unknown): string | undefined =>
+  typeof value === "string" && value.trim() ? value.trim() : undefined;
+
+const getHourlyRate = (salary: string | null): number | undefined => {
+  if (!salary) return undefined;
+
+  const amountMatch = salary.match(/\d[\d,\s]*(?:\.\d+)?/);
+  if (!amountMatch) return undefined;
+
+  const amount = Number(amountMatch[0].replace(/[,\s]/g, ""));
+  if (!Number.isFinite(amount)) return undefined;
+
+  if (/\b(?:hour|hourly|hr|hrs)\b/i.test(salary)) return amount;
+  return amount / 2080;
+};
+
 const getJobs = async (req: Request, res: Response) => {
   try {
-    const jobs = await prisma.job.findMany();
-    return res.status(200).json({ message: "Jobs retrieved successfully", data: jobs });
+    const searchText = getQueryString(req.query.q);
+    const jobType = getQueryString(req.query.jobType);
+    const rawMinimumHourlyRate = getQueryString(req.query.minHourlyRate);
+    const minimumHourlyRate = rawMinimumHourlyRate === undefined
+      ? undefined
+      : Number(rawMinimumHourlyRate);
+
+    if (
+      minimumHourlyRate !== undefined &&
+      (!Number.isFinite(minimumHourlyRate) || minimumHourlyRate < 0)
+    ) {
+      return res.status(400).json({ message: "Minimum hourly rate must be a non-negative number" });
+    }
+
+    const jobs = await prisma.job.findMany({
+      where: {
+        ...(jobType ? { jobType } : {}),
+        ...(searchText
+          ? {
+            OR: [
+              { title: { contains: searchText, mode: "insensitive" as const } },
+              { company: { contains: searchText, mode: "insensitive" as const } },
+              { location: { contains: searchText, mode: "insensitive" as const } },
+              { description: { contains: searchText, mode: "insensitive" as const } },
+            ],
+          }
+          : {}),
+      },
+    });
+    const filteredJobs = minimumHourlyRate === undefined
+      ? jobs
+      : jobs.filter((job) => {
+        const hourlyRate = getHourlyRate(job.salary);
+        return hourlyRate !== undefined && hourlyRate >= minimumHourlyRate;
+      });
+
+    return res.status(200).json({ message: "Jobs retrieved successfully", data: filteredJobs });
   } catch (error) {
     console.error("Error retrieving jobs:", error);
     return res.status(500).json({ message: "Internal server error" });
