@@ -1,14 +1,13 @@
-import express from 'express';
-import type { Request, Response } from 'express';
-import { config } from 'dotenv';
-import cookieParser from 'cookie-parser';
+import cookieParser from "cookie-parser";
+import { config } from "dotenv";
+import express from "express";
 
+import { disconnectDB } from "./config/db.js";
+import applicationsRouter from "./routes/applications.js";
 // Import Routes
-import authRouter from './routes/auth.js';
+import authRouter from "./routes/auth.js";
 // import usersRouter from './routes/users.js';
-import jobsRouter from './routes/jobs.js';
-// import applicationsRouter from './routes/applications.js';
-import { disconnectDB } from './config/db.js';
+import jobsRouter from "./routes/jobs.js";
 
 config(); // Load environment variables from .env file
 
@@ -20,16 +19,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Middleware to parse cookies
 
-// Basic Route with typed request and response parameters
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: 'Hello from TypeScript and Express!' });
-});
 
 // API Routes
-app.use('/api/auth', authRouter);
+app.use("/api/auth", authRouter);
 // app.use('/api/users', usersRouter);
-app.use('/api/jobs', jobsRouter);
-// app.use('/api/applications', applicationsRouter);
+app.use("/api/jobs", jobsRouter);
+app.use("/api/applications", applicationsRouter);
 
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

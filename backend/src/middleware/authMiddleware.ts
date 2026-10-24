@@ -25,11 +25,10 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
     });
 
     if(!user) {
-      res.status(401).json({ message: "Unauthorized: User no longer exists" });
+      return res.status(401).json({ message: "Unauthorized: User no longer exists" });
     }
 
-    console.log("Authenticated user:", user);
-
+    req.user = { id: user.id };
     next();
   } catch(error) {
     console.error("Error verifying token:", error);
