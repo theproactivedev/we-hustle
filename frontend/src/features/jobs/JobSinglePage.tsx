@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useCurrentUser } from "../auth/queries";
+import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import { useJob } from "./queries";
@@ -9,6 +11,8 @@ import type { JobSinglePageProps } from "./types";
 export default function JobSinglePage({ jobId }: JobSinglePageProps) {
   const { data, error, isLoading } = useJob(jobId);
   const [saved, setSaved] = useState(false);
+  const { data: user, isLoading: isAuthLoading } = useCurrentUser();
+  const applicationMutation = useSubmitApplication();
   const job = data?.data;
 
   return (
@@ -120,10 +124,34 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-mute">
                   Take a closer look at the role details, then apply when you’re ready to make your move.
                 </p>
-                <a href="#apply" className="btn btn-primary mt-5">
-                  Apply now
-                  <span aria-hidden="true">→</span>
-                </a>
+                {isAuthLoading ? (
+                  <p role="status" className="mt-5 text-sm text-mute">Checking sign-in...</p>
+                ) : user?.id ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary mt-5 disabled:cursor-not-allowed disabled:opacity-60"
+                    disabled={applicationMutation.isPending}
+                    onClick={() => applicationMutation.mutate(job.id)}
+                  >
+                    {applicationMutation.isPending ? "Applying..." : "Apply now"}
+                    {!applicationMutation.isPending && <span aria-hidden="true"> →</span>}
+                  </button>
+                ) : (
+                  <p className="mt-5 text-sm text-mute">
+                    <Link to="/sign-in" className="link text-teal-400">Sign in</Link>
+                    {" "}to apply for this role.
+                  </p>
+                )}
+                {applicationMutation.isSuccess && (
+                  <p role="status" className="mt-3 text-sm text-teal-400">
+                    Your application was submitted.
+                  </p>
+                )}
+                {applicationMutation.isError && (
+                  <p role="alert" className="mt-3 text-sm text-red-200">
+                    {getApplicationErrorMessage(applicationMutation.error)}
+                  </p>
+                )}
               </article>
             </div>
 

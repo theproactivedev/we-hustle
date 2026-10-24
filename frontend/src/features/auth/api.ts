@@ -12,7 +12,7 @@ async function signIn(payload: SignInPayload): Promise<SignInResponse> {
 }
 
 async function logout() {
-    await axios.post('api/auth/logout');
+  await axios.post('/api/auth/logout');
 }
 
 export {

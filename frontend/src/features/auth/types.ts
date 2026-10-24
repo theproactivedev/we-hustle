@@ -9,6 +9,10 @@ type SignInPayload = {
   password: string;
 }
 
+type AuthRedirect = {
+  jobId: string;
+};
+
 type SignInResponse = {
   message: string;
   data: {
@@ -19,6 +23,7 @@ type SignInResponse = {
 
 export type {
   AuthUser,
+  AuthRedirect,
   SignInPayload,
   SignInResponse,
-}
+};

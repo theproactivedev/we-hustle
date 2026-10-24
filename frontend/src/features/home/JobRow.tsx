@@ -2,9 +2,29 @@ import { Link } from "@tanstack/react-router";
 import type { Job } from "../../dataTypes";
 
 
-type Props = { job: Job; saved?: boolean; onSave?: () => void; preview?: boolean };
+type Props = {
+  job: Job;
+  saved?: boolean;
+  onSave?: () => void;
+  onApply?: (jobId: string) => void;
+  isAuthLoading?: boolean;
+  isApplying?: boolean;
+  applicationMessage?: string;
+  applicationError?: string;
+  preview?: boolean;
+};
 
-export default function JobRow({ job, saved = false, onSave, preview }: Props) {
+export default function JobRow({
+  job,
+  saved = false,
+  onSave,
+  onApply,
+  isAuthLoading = false,
+  isApplying = false,
+  applicationMessage,
+  applicationError,
+  preview,
+}: Props) {
   return (
     <article className="group relative grid gap-4 px-5 py-5 transition-colors duration-200 hover:bg-teal-400/[0.06] sm:grid-cols-[1fr_auto] sm:gap-8 sm:px-6">
       <span aria-hidden className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-teal-400 transition-transform duration-200 group-hover:scale-y-100 group-focus-within:scale-y-100" />
@@ -52,16 +72,32 @@ export default function JobRow({ job, saved = false, onSave, preview }: Props) {
             })}
           </p>
         </div>
-        {!preview && (
-          <div className="relative z-10 flex items-center gap-2">
-            <button type="button" onClick={onSave} aria-pressed={saved} aria-label={`${saved ? "Unsave" : "Save"} ${job.title}`}
-              className={`grid size-10 place-items-center border transition-colors ${saved ? "border-teal-400 bg-teal-400/10 text-teal-400" : "border-line text-mute hover:border-teal-400 hover:text-teal-400"}`}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z" /></svg>
-            </button>
-            <a href={`/jobs/${job.id}#apply`} className="btn btn-primary">Apply</a>
-          </div>
-        )}
+        
+        <div className="relative z-10 flex items-center gap-2">
+          <button type="button" onClick={onSave} aria-pressed={saved} aria-label={`${saved ? "Unsave" : "Save"} ${job.title}`}
+            className={`grid size-10 place-items-center border transition-colors ${saved ? "border-teal-400 bg-teal-400/10 text-teal-400" : "border-line text-mute hover:border-teal-400 hover:text-teal-400"}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z" /></svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => onApply?.(job.id)}
+            disabled={isApplying || isAuthLoading}
+            className="btn btn-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isAuthLoading ? "Checking..." : isApplying ? "Applying..." : "Apply"}
+          </button>
+        </div>
       </div>
+      {applicationMessage && (
+        <p role="status" className="relative z-10 text-right text-sm text-teal-400 sm:col-span-2">
+          {applicationMessage}
+        </p>
+      )}
+      {applicationError && (
+        <p role="alert" className="relative z-10 text-right text-sm text-red-200 sm:col-span-2">
+          {applicationError}
+        </p>
+      )}
     </article>
   );
 }

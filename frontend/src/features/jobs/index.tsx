@@ -95,13 +95,13 @@ export default function JobsPage({ search, onSearchChange }: JobsPageProps) {
               />
             </label>
             <div className="flex gap-3 sm:col-span-2 lg:col-span-1">
-              <button type="submit" className="btn btn-primary flex-1 lg:flex-none">
+              <button type="submit" className="cursor-pointer btn btn-primary flex-1 lg:flex-none">
                 Search
               </button>
               <button
                 type="button"
                 onClick={clearFilters}
-                className="btn btn-ghost flex-1 lg:flex-none"
+                className="cursor-pointer btn btn-ghost flex-1 lg:flex-none"
               >
                 Clear
               </button>

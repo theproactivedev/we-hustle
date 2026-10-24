@@ -37,7 +37,7 @@ export default function Header() {
             ? (
               <>
                 <Link to="/jobs" className="link">Jobs</Link>
-                <a onClick={logoutUser} className="link">Sign Out</a>
+                <a onClick={logoutUser} className="cursor-pointer link">Sign Out</a>
               </>
             ): (
               <>

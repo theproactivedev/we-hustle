@@ -3,6 +3,9 @@ import JobRow from "./JobRow";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import { useCurrentUser } from "../auth/queries";
+import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
+import SignInOrRegisterModal from "../signInOrRegisterModal";
 import type { Job } from "../../dataTypes";
 
 const chamfer = "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_100%)]";
@@ -19,7 +22,25 @@ export default function JobBoard() {
     queryFn: fetchJobs,
   })
   const [q, setQ] = useState("");
+  const [authModalJobId, setAuthModalJobId] = useState<string | null>(null);
+  const [applicationJobId, setApplicationJobId] = useState<string | null>(null);
+  const { data: user, isLoading: isAuthLoading } = useCurrentUser();
+  const applicationMutation = useSubmitApplication();
 
+  const handleApply = (jobId: string) => {
+    console.log('apply', jobId);
+    applicationMutation.reset();
+    setApplicationJobId(null);
+
+    if (user?.id) {
+      console.log('logged in');
+      setApplicationJobId(jobId);
+      applicationMutation.mutate(jobId);
+    } else if (!isAuthLoading) {
+      console.log('not logged in');
+      setAuthModalJobId(jobId);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -78,7 +99,26 @@ export default function JobBoard() {
       <div className={`mt-6 bg-line p-px ${chamfer}`}>
         {results && results?.length > 0 ? (
           <div className={`divide-y divide-line bg-panel ${chamfer}`}>
-            {results.slice(0, 5).map((j) => <JobRow key={j.id} job={j} />)}
+            {results.slice(0, 5).map((job) => (
+              <JobRow
+                key={job.id}
+                job={job}
+                preview={!user?.id}
+                onApply={handleApply}
+                isAuthLoading={isAuthLoading}
+                isApplying={applicationJobId === job.id && applicationMutation.isPending}
+                applicationMessage={
+                  applicationJobId === job.id && applicationMutation.isSuccess
+                    ? "Your application was submitted."
+                    : undefined
+                }
+                applicationError={
+                  applicationJobId === job.id && applicationMutation.isError
+                    ? getApplicationErrorMessage(applicationMutation.error)
+                    : undefined
+                }
+              />
+            ))}
           </div>
         ) : (
           <div className={`bg-panel px-6 py-14 text-center ${chamfer}`}>
@@ -92,6 +132,12 @@ export default function JobBoard() {
           <Link to="/jobs" className="link">Browse all roles</Link>
         </div>
       </div>
+      {authModalJobId && (
+        <SignInOrRegisterModal
+          jobId={authModalJobId}
+          onClose={() => setAuthModalJobId(null)}
+        />
+      )}
     </section>
   );
 }

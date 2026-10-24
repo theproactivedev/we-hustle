@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout, signIn } from "./api";
-import type { SignInPayload } from "./types";
+import type { AuthRedirect, SignInPayload } from "./types";
 import { useNavigate } from "@tanstack/react-router";
 
-export function useSignIn() {
+export function useSignIn(redirect?: AuthRedirect) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -11,7 +11,11 @@ export function useSignIn() {
     mutationFn: (payload: SignInPayload) => signIn(payload),
     onSuccess: ({ data }) => {
       queryClient.setQueryData(["auth", "me"], data.user);
-      void navigate({ to: "/jobs" });
+      if (redirect) {
+        void navigate({ to: "/jobs/$jobId", params: { jobId: redirect.jobId } });
+      } else {
+        void navigate({ to: "/jobs" });
+      }
     },
   });
 }
