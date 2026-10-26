@@ -1,6 +1,5 @@
 import type { SubmitEvent } from "react";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import JobRow from "../home/JobRow";
 import { useJobs } from "./queries";
 import { getJobSearchFromForm, jobTypes } from "./utils";
@@ -20,7 +19,6 @@ export default function JobsPage({ search, onSearchChange }: JobsPageProps) {
 
   return (
     <>
-      <Header />
       <main>
         <section className="border-b border-line">
           <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">

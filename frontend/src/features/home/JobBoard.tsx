@@ -103,7 +103,6 @@ export default function JobBoard() {
               <JobRow
                 key={job.id}
                 job={job}
-                preview={!user?.id}
                 onApply={handleApply}
                 isAuthLoading={isAuthLoading}
                 isApplying={applicationJobId === job.id && applicationMutation.isPending}

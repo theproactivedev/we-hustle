@@ -3,7 +3,6 @@ import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
 import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import { useJob } from "./queries";
 import type { JobSinglePageProps } from "./types";
 
@@ -17,7 +16,6 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
 
   return (
     <>
-      <Header />
       <main>
         <section id="top" className="border-b border-line">
           <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">

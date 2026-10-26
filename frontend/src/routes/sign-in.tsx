@@ -50,7 +50,6 @@ function SignInPage() {
 
   return (
     <>
-      <Header />
       <main className="relative isolate min-h-[calc(100vh-4rem)] overflow-hidden border-b border-line">
         <div
           aria-hidden="true"

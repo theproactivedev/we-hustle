@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import JobBoard from "./JobBoard";
 
 const stats = [["142", "open roles"], ["58", "hiring teams"], ["$4.8k", "median monthly pay"]];
@@ -13,7 +12,6 @@ const steps = [
 export default function Home() {
   return (
     <>
-      <Header />
       <main>
         <section className="relative overflow-hidden border-b border-line">
           <div aria-hidden className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(var(--color-line)_1px,transparent_1px),linear-gradient(90deg,var(--color-line)_1px,transparent_1px)] [background-size:40px_40px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" />

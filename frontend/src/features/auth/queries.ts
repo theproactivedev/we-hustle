@@ -9,6 +9,7 @@ export const currentUserQueryOptions = queryOptions({
   queryFn: getCurrentUser,
   staleTime: 60_000,
   retry: false,
+  refetchOnWindowFocus: false,
 });
 
 export function useCurrentUser() {

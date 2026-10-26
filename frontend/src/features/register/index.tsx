@@ -1,6 +1,5 @@
 import { useState, type SubmitEvent } from "react";
 import Footer from "../../components/Footer";
-import Header from "../../components/Header";
 import { useRegister } from "./mutations";
 import { getRegisterErrorMessage, getRegisterValidationError } from "./utils";
 
@@ -49,7 +48,6 @@ function Register() {
 
   return (
     <>
-      <Header />
       <main className="relative isolate min-h-[calc(100vh-4rem)] overflow-hidden border-b border-line">
         <div
           aria-hidden="true"

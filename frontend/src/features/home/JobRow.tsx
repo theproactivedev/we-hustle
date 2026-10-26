@@ -11,7 +11,6 @@ type Props = {
   isApplying?: boolean;
   applicationMessage?: string;
   applicationError?: string;
-  preview?: boolean;
 };
 
 export default function JobRow({
@@ -23,7 +22,6 @@ export default function JobRow({
   isApplying = false,
   applicationMessage,
   applicationError,
-  preview,
 }: Props) {
   return (
     <article className="group relative grid gap-4 px-5 py-5 transition-colors duration-200 hover:bg-teal-400/[0.06] sm:grid-cols-[1fr_auto] sm:gap-8 sm:px-6">
@@ -32,8 +30,6 @@ export default function JobRow({
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-display text-lg font-semibold leading-snug transition-colors group-hover:text-teal-400">
-            {preview ? job.title || "Job title" : (
-              /* stretched link: whole row is clickable, buttons sit above it */
               <Link
                 to="/jobs/$jobId"
                 params={{ jobId: job.id }}
@@ -41,7 +37,6 @@ export default function JobRow({
               >
                 {job.title}
               </Link>
-            )}
           </h3>
           <span className="border border-teal-400/50 px-1.5 py-0.5 font-mono text-xs text-teal-400">{job.jobType}</span>
         </div>
