@@ -8,6 +8,8 @@ type Props = {
   onSave?: () => void;
   onApply?: (jobId: string) => void;
   isAuthLoading?: boolean;
+  isApplicationsLoading?: boolean;
+  isApplied?: boolean;
   isApplying?: boolean;
   applicationMessage?: string;
   applicationError?: string;
@@ -19,6 +21,8 @@ export default function JobRow({
   onSave,
   onApply,
   isAuthLoading = false,
+  isApplicationsLoading = false,
+  isApplied = false,
   isApplying = false,
   applicationMessage,
   applicationError,
@@ -76,10 +80,16 @@ export default function JobRow({
           <button
             type="button"
             onClick={() => onApply?.(job.id)}
-            disabled={isApplying || isAuthLoading}
+            disabled={isApplying || isAuthLoading || isApplicationsLoading || isApplied}
             className="btn btn-primary cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isAuthLoading ? "Checking..." : isApplying ? "Applying..." : "Apply"}
+            {isApplying
+              ? "Applying..."
+              : isAuthLoading || isApplicationsLoading
+                ? "Checking..."
+                : isApplied
+                  ? "Applied"
+                  : "Apply"}
           </button>
         </div>
       </div>

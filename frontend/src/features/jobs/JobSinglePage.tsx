@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
 import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
+import { useMyApplications } from "../applications/queries";
 import Footer from "../../components/Footer";
 import { useJob } from "./queries";
 import type { JobSinglePageProps } from "./types";
@@ -11,6 +12,8 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
   const { data, error, isLoading } = useJob(jobId);
   const [saved, setSaved] = useState(false);
   const { data: user, isLoading: isAuthLoading } = useCurrentUser();
+  const applicationsQuery = useMyApplications(user?.id);
+  const isApplied = applicationsQuery.data?.data.jobIds.includes(jobId) ?? false;
   const applicationMutation = useSubmitApplication();
   const job = data?.data;
 
@@ -128,11 +131,19 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
                   <button
                     type="button"
                     className="btn btn-primary mt-5 disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={applicationMutation.isPending}
+                    disabled={applicationMutation.isPending || applicationsQuery.isLoading || isApplied}
                     onClick={() => applicationMutation.mutate(job.id)}
                   >
-                    {applicationMutation.isPending ? "Applying..." : "Apply now"}
-                    {!applicationMutation.isPending && <span aria-hidden="true"> →</span>}
+                    {applicationMutation.isPending
+                      ? "Applying..."
+                      : applicationsQuery.isLoading
+                        ? "Checking..."
+                        : isApplied
+                          ? "Applied"
+                          : "Apply now"}
+                    {!applicationMutation.isPending && !applicationsQuery.isLoading && !isApplied && (
+                      <span aria-hidden="true"> →</span>
+                    )}
                   </button>
                 ) : (
                   <p className="mt-5 text-sm text-mute">

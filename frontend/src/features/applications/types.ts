@@ -9,4 +9,11 @@ type ApplicationResponse = {
   };
 };
 
-export type { ApplicationResponse };
+type MyApplicationsResponse = {
+  message: string;
+  data: {
+    jobIds: string[];
+  };
+};
+
+export type { ApplicationResponse, MyApplicationsResponse };

@@ -19,6 +19,7 @@ export function useSubmitApplication() {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["jobs"] }),
         queryClient.invalidateQueries({ queryKey: ["job", jobId] }),
+        queryClient.invalidateQueries({ queryKey: ["applications", "mine"] }),
       ]);
     },
   });

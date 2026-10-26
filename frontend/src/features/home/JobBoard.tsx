@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
 import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
+import { useMyApplications } from "../applications/queries";
 import SignInOrRegisterModal from "../signInOrRegisterModal";
 import type { Job } from "../../dataTypes";
 
@@ -12,7 +13,6 @@ const chamfer = "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_
 
 const fetchJobs = async(): Promise<{ data: Job[] }> => {
   const res = await axios.get("/api/jobs");
-  console.log("Fetched jobs:", res.data); // Log the fetched data
   return res.data;
 }
 
@@ -25,19 +25,22 @@ export default function JobBoard() {
   const [authModalJobId, setAuthModalJobId] = useState<string | null>(null);
   const [applicationJobId, setApplicationJobId] = useState<string | null>(null);
   const { data: user, isLoading: isAuthLoading } = useCurrentUser();
+  const applicationsQuery = useMyApplications(user?.id);
+  const appliedJobIds = new Set(applicationsQuery.data?.data.jobIds ?? []);
   const applicationMutation = useSubmitApplication();
 
   const handleApply = (jobId: string) => {
-    console.log('apply', jobId);
+    if (appliedJobIds.has(jobId)) {
+      return;
+    }
+
     applicationMutation.reset();
     setApplicationJobId(null);
 
     if (user?.id) {
-      console.log('logged in');
       setApplicationJobId(jobId);
       applicationMutation.mutate(jobId);
     } else if (!isAuthLoading) {
-      console.log('not logged in');
       setAuthModalJobId(jobId);
     }
   };
@@ -105,6 +108,8 @@ export default function JobBoard() {
                 job={job}
                 onApply={handleApply}
                 isAuthLoading={isAuthLoading}
+                isApplicationsLoading={applicationsQuery.isLoading}
+                isApplied={appliedJobIds.has(job.id)}
                 isApplying={applicationJobId === job.id && applicationMutation.isPending}
                 applicationMessage={
                   applicationJobId === job.id && applicationMutation.isSuccess
