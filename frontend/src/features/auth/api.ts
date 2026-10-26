@@ -2,7 +2,7 @@ import axios from "axios";
 import type { AuthUser, SignInPayload, SignInResponse } from "./types";
 
 async function getCurrentUser(): Promise<AuthUser | null> {
-  const { data } = await axios.get<{ message: string, data: { user: AuthUser } }>('api/auth/me');
+  const { data } = await axios.get<{ message: string, data: { user: AuthUser } }>('/api/auth/me');
   return data.data.user;
 }
 
