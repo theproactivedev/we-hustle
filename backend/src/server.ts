@@ -8,6 +8,7 @@ import applicationsRouter from "./routes/applications.js";
 import authRouter from "./routes/auth.js";
 // import usersRouter from './routes/users.js';
 import jobsRouter from "./routes/jobs.js";
+import savedJobsRouter from "./routes/savedJobs.js";
 
 config(); // Load environment variables from .env file
 
@@ -25,6 +26,7 @@ app.use("/api/auth", authRouter);
 // app.use('/api/users', usersRouter);
 app.use("/api/jobs", jobsRouter);
 app.use("/api/applications", applicationsRouter);
+app.use("/api/saved-jobs", savedJobsRouter);
 
 const server = app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
