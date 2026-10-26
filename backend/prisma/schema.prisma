@@ -20,6 +20,7 @@ model User {
   userType     String        @db.VarChar(255)
   postedJobs   Job[]         @relation("PostedJobs")
   applications Application[]
+  savedJobs    SavedJobs[]
 }
 
 model Job {
@@ -36,6 +37,7 @@ model Job {
   postedById String
 
   applications Application[]
+  savedJobs    SavedJobs[]
 }
 
 model Application {
@@ -53,4 +55,15 @@ model Application {
 
   // Block a user from applying to the same job twice 
   @@unique([jobId, applicantId])
+}
+
+model SavedJobs {
+  id     String @id @default(cuid())
+  jobId  String
+  userId String
+
+  job  Job  @relation(fields: [jobId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([jobId, userId])
 }
