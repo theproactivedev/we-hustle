@@ -1,6 +1,11 @@
+import { useState } from "react";
 import type { SubmitEvent } from "react";
 import Footer from "../../components/Footer";
 import JobRow from "../home/JobRow";
+import { useCurrentUser } from "../auth/queries";
+import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
+import { useMyApplications } from "../applications/queries";
+import SignInOrRegisterModal from "../signInOrRegisterModal";
 import { useJobs } from "./queries";
 import { getJobSearchFromForm, jobTypes } from "./utils";
 import type { JobsPageProps } from "./types";
@@ -9,10 +14,32 @@ const chamfer = "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_
 
 export default function JobsPage({ search, onSearchChange }: JobsPageProps) {
   const { data, error, isLoading } = useJobs(search);
+  const [authModalJobId, setAuthModalJobId] = useState<string | null>(null);
+  const [applicationJobId, setApplicationJobId] = useState<string | null>(null);
+  const { data: user, isLoading: isAuthLoading } = useCurrentUser();
+  const applicationsQuery = useMyApplications(user?.id);
+  const appliedJobIds = new Set(applicationsQuery.data?.data.jobIds ?? []);
+  const applicationMutation = useSubmitApplication();
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearchChange(getJobSearchFromForm(new FormData(event.currentTarget)));
+  };
+
+  const handleApply = (jobId: string) => {
+    if (appliedJobIds.has(jobId)) {
+      return;
+    }
+
+    applicationMutation.reset();
+    setApplicationJobId(null);
+
+    if (user?.id) {
+      setApplicationJobId(jobId);
+      applicationMutation.mutate(jobId);
+    } else if (!isAuthLoading) {
+      setAuthModalJobId(jobId);
+    }
   };
 
   const clearFilters = () => onSearchChange({});
@@ -118,7 +145,25 @@ export default function JobsPage({ search, onSearchChange }: JobsPageProps) {
             ) : data?.data.length ? (
               <div className={`divide-y divide-line bg-panel ${chamfer}`}>
                 {data.data.map((job) => (
-                  <JobRow key={job.id} job={job} />
+                  <JobRow
+                    key={job.id}
+                    job={job}
+                    onApply={handleApply}
+                    isAuthLoading={isAuthLoading}
+                    isApplicationsLoading={applicationsQuery.isLoading}
+                    isApplied={appliedJobIds.has(job.id)}
+                    isApplying={applicationJobId === job.id && applicationMutation.isPending}
+                    applicationMessage={
+                      applicationJobId === job.id && applicationMutation.isSuccess
+                        ? "Your application was submitted."
+                        : undefined
+                    }
+                    applicationError={
+                      applicationJobId === job.id && applicationMutation.isError
+                        ? getApplicationErrorMessage(applicationMutation.error)
+                        : undefined
+                    }
+                  />
                 ))}
               </div>
             ) : (
@@ -132,6 +177,12 @@ export default function JobsPage({ search, onSearchChange }: JobsPageProps) {
           </div>
         </section>
       </main>
+      {authModalJobId && (
+        <SignInOrRegisterModal
+          jobId={authModalJobId}
+          onClose={() => setAuthModalJobId(null)}
+        />
+      )}
       <Footer />
     </>
   );
