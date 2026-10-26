@@ -6,8 +6,11 @@ import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
 import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
 import { useMyApplications } from "../applications/queries";
+import { getSavedJobErrorMessage, useToggleSavedJob } from "../savedJobs/mutations";
+import { useMySavedJobs } from "../savedJobs/queries";
 import SignInOrRegisterModal from "../signInOrRegisterModal";
 import type { Job } from "../../dataTypes";
+import type { AuthModalState } from "../signInOrRegisterModal/types";
 
 const chamfer = "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_100%)]";
 
@@ -22,12 +25,15 @@ export default function JobBoard() {
     queryFn: fetchJobs,
   })
   const [q, setQ] = useState("");
-  const [authModalJobId, setAuthModalJobId] = useState<string | null>(null);
+  const [authModalState, setAuthModalState] = useState<AuthModalState>(null);
   const [applicationJobId, setApplicationJobId] = useState<string | null>(null);
   const { data: user, isLoading: isAuthLoading } = useCurrentUser();
   const applicationsQuery = useMyApplications(user?.id);
   const appliedJobIds = new Set(applicationsQuery.data?.data.jobIds ?? []);
   const applicationMutation = useSubmitApplication();
+  const savedJobsQuery = useMySavedJobs(user?.id);
+  const savedJobIds = new Set(savedJobsQuery.data?.data.jobIds ?? []);
+  const savedJobMutation = useToggleSavedJob(user?.id);
 
   const handleApply = (jobId: string) => {
     if (appliedJobIds.has(jobId)) {
@@ -41,7 +47,15 @@ export default function JobBoard() {
       setApplicationJobId(jobId);
       applicationMutation.mutate(jobId);
     } else if (!isAuthLoading) {
-      setAuthModalJobId(jobId);
+      setAuthModalState({ jobId, intent: "apply" });
+    }
+  };
+
+  const handleSave = (jobId: string) => {
+    if (user?.id) {
+      savedJobMutation.mutate({ jobId, isSaved: savedJobIds.has(jobId) });
+    } else if (!isAuthLoading) {
+      setAuthModalState({ jobId, intent: "save" });
     }
   };
 
@@ -106,6 +120,15 @@ export default function JobBoard() {
               <JobRow
                 key={job.id}
                 job={job}
+                saved={savedJobIds.has(job.id)}
+                onSave={handleSave}
+                isSavedLoading={savedJobsQuery.isLoading}
+                isSavePending={savedJobMutation.isPending && savedJobMutation.variables?.jobId === job.id}
+                saveError={
+                  savedJobMutation.isError && savedJobMutation.variables?.jobId === job.id
+                    ? getSavedJobErrorMessage(savedJobMutation.error)
+                    : undefined
+                }
                 onApply={handleApply}
                 isAuthLoading={isAuthLoading}
                 isApplicationsLoading={applicationsQuery.isLoading}
@@ -136,10 +159,11 @@ export default function JobBoard() {
           <Link to="/jobs" className="link">Browse all roles</Link>
         </div>
       </div>
-      {authModalJobId && (
+      {authModalState && (
         <SignInOrRegisterModal
-          jobId={authModalJobId}
-          onClose={() => setAuthModalJobId(null)}
+          jobId={authModalState.jobId}
+          intent={authModalState.intent}
+          onClose={() => setAuthModalState(null)}
         />
       )}
     </section>

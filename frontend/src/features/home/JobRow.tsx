@@ -1,24 +1,14 @@
 import { Link } from "@tanstack/react-router";
-import type { Job } from "../../dataTypes";
+import type { JobRowProps } from "./types";
 
-
-type Props = {
-  job: Job;
-  saved?: boolean;
-  onSave?: () => void;
-  onApply?: (jobId: string) => void;
-  isAuthLoading?: boolean;
-  isApplicationsLoading?: boolean;
-  isApplied?: boolean;
-  isApplying?: boolean;
-  applicationMessage?: string;
-  applicationError?: string;
-};
 
 export default function JobRow({
   job,
   saved = false,
   onSave,
+  isSavedLoading = false,
+  isSavePending = false,
+  saveError,
   onApply,
   isAuthLoading = false,
   isApplicationsLoading = false,
@@ -26,7 +16,7 @@ export default function JobRow({
   isApplying = false,
   applicationMessage,
   applicationError,
-}: Props) {
+}: JobRowProps) {
   return (
     <article className="group relative grid gap-4 px-5 py-5 transition-colors duration-200 hover:bg-teal-400/[0.06] sm:grid-cols-[1fr_auto] sm:gap-8 sm:px-6">
       <span aria-hidden className="absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-teal-400 transition-transform duration-200 group-hover:scale-y-100 group-focus-within:scale-y-100" />
@@ -72,10 +62,23 @@ export default function JobRow({
           </p>
         </div>
         
-        <div className="relative z-10 flex items-center gap-2">
-          <button type="button" onClick={onSave} aria-pressed={saved} aria-label={`${saved ? "Unsave" : "Save"} ${job.title}`}
-            className={`grid size-10 place-items-center border transition-colors ${saved ? "border-teal-400 bg-teal-400/10 text-teal-400" : "border-line text-mute hover:border-teal-400 hover:text-teal-400"}`}>
+        <div className="relative z-10 flex items-center items-stretch gap-2">
+          <button
+            type="button"
+            onClick={() => onSave?.(job.id)}
+            aria-pressed={saved}
+            aria-label={`${saved ? "Remove saved" : "Save"} ${job.title}`}
+            disabled={isAuthLoading || isSavedLoading || isSavePending}
+            className={`flex items-center gap-2 border px-3 transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${saved ? "border-teal-400 bg-teal-400/10 text-teal-400" : "border-line text-mute hover:border-teal-400 hover:text-teal-400"}`}
+          >
             <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4V3Z" /></svg>
+            {isSavePending
+              ? saved ? "Removing..." : "Saving..."
+              : isAuthLoading || isSavedLoading
+                ? "Checking..."
+                : saved
+                  ? "Saved"
+                  : "Save"}
           </button>
           <button
             type="button"
@@ -101,6 +104,11 @@ export default function JobRow({
       {applicationError && (
         <p role="alert" className="relative z-10 text-right text-sm text-red-200 sm:col-span-2">
           {applicationError}
+        </p>
+      )}
+      {saveError && (
+        <p role="alert" className="relative z-10 text-right text-sm text-red-200 sm:col-span-2">
+          {saveError}
         </p>
       )}
     </article>

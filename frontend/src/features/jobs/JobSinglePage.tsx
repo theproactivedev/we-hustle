@@ -3,6 +3,9 @@ import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
 import { getApplicationErrorMessage, useSubmitApplication } from "../applications/mutations";
 import { useMyApplications } from "../applications/queries";
+import { getSavedJobErrorMessage, useToggleSavedJob } from "../savedJobs/mutations";
+import { useMySavedJobs } from "../savedJobs/queries";
+import SignInOrRegisterModal from "../signInOrRegisterModal";
 import Footer from "../../components/Footer";
 import { useJob } from "./queries";
 import type { JobSinglePageProps } from "./types";
@@ -10,12 +13,23 @@ import type { JobSinglePageProps } from "./types";
 
 export default function JobSinglePage({ jobId }: JobSinglePageProps) {
   const { data, error, isLoading } = useJob(jobId);
-  const [saved, setSaved] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const { data: user, isLoading: isAuthLoading } = useCurrentUser();
   const applicationsQuery = useMyApplications(user?.id);
   const isApplied = applicationsQuery.data?.data.jobIds.includes(jobId) ?? false;
   const applicationMutation = useSubmitApplication();
+  const savedJobsQuery = useMySavedJobs(user?.id);
+  const isSaved = savedJobsQuery.data?.data.jobIds.includes(jobId) ?? false;
+  const savedJobMutation = useToggleSavedJob(user?.id);
   const job = data?.data;
+
+  const handleSave = () => {
+    if (user?.id) {
+      savedJobMutation.mutate({ jobId, isSaved });
+    } else if (!isAuthLoading) {
+      setShowAuthModal(true);
+    }
+  };
 
   return (
     <>
@@ -72,24 +86,36 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
-                      onClick={() => setSaved((currentSaved) => !currentSaved)}
-                      aria-pressed={saved}
-                      aria-label={`${saved ? "Unsave" : "Save"} ${job.title}`}
-                      className={`btn btn-ghost ${saved ? "border-teal-400 text-teal-400" : ""}`}
+                      onClick={handleSave}
+                      aria-pressed={isSaved}
+                      aria-label={`${isSaved ? "Remove saved" : "Save"} ${job.title}`}
+                      disabled={isAuthLoading || savedJobsQuery.isLoading || savedJobMutation.isPending}
+                      className={`btn btn-ghost disabled:cursor-not-allowed disabled:opacity-60 ${isSaved ? "border-teal-400 text-teal-400" : ""}`}
                     >
                       <svg
                         width="16"
                         height="16"
                         viewBox="0 0 24 24"
-                        fill={saved ? "currentColor" : "none"}
+                        fill={isSaved ? "currentColor" : "none"}
                         stroke="currentColor"
                         strokeWidth="2"
                         aria-hidden="true"
                       >
                         <path d="M6 3h12v18l-6-4-6 4V3Z" />
                       </svg>
-                      {saved ? "Saved" : "Save"}
+                      {savedJobMutation.isPending
+                        ? isSaved ? "Removing..." : "Saving..."
+                        : isAuthLoading || savedJobsQuery.isLoading
+                          ? "Checking..."
+                          : isSaved
+                            ? "Saved"
+                            : "Save"}
                     </button>
+                    {savedJobMutation.isError && savedJobMutation.variables?.jobId === jobId && (
+                      <p role="alert" className="w-full text-sm text-red-200">
+                        {getSavedJobErrorMessage(savedJobMutation.error)}
+                      </p>
+                    )}
                   </div>
                 </div>
               </>
@@ -223,6 +249,13 @@ export default function JobSinglePage({ jobId }: JobSinglePageProps) {
         )}
       </main>
       <Footer />
+      {showAuthModal && (
+        <SignInOrRegisterModal
+          jobId={jobId}
+          intent="save"
+          onClose={() => setShowAuthModal(false)}
+        />
+      )}
     </>
   );
 }

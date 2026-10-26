@@ -33,6 +33,7 @@ export function useLogout() {
       // Remove cached private data.
       await queryClient.cancelQueries();
       queryClient.removeQueries({ queryKey: ["applications", "mine"] });
+      queryClient.removeQueries({ queryKey: ["saved-jobs", "mine"] });
     },
   });
 }

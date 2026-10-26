@@ -6,7 +6,7 @@ import { useRegister } from "../register/mutations";
 import type { Mode, SignInOrRegisterModalProps } from "./types";
 
 
-function SignInOrRegisterModal({ jobId, onClose }: SignInOrRegisterModalProps) {
+function SignInOrRegisterModal({ jobId, intent, onClose }: SignInOrRegisterModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [mode, setMode] = useState<Mode>("sign-in");
   const [fields, setFields] = useState({
@@ -25,6 +25,12 @@ function SignInOrRegisterModal({ jobId, onClose }: SignInOrRegisterModalProps) {
       dialog.showModal();
     }
   }, []);
+
+  useEffect(() => {
+    if (signInMutation.isSuccess || registerMutation.isSuccess) {
+      dialogRef.current?.close();
+    }
+  }, [registerMutation.isSuccess, signInMutation.isSuccess]);
 
   const changeMode = (nextMode: Mode) => {
     setMode(nextMode);
@@ -81,6 +87,7 @@ function SignInOrRegisterModal({ jobId, onClose }: SignInOrRegisterModalProps) {
     : "";
   const errorMessage = validationError || (mode === "sign-in" ? signInError : registerError);
   const isPending = mode === "sign-in" ? signInMutation.isPending : registerMutation.isPending;
+  const actionLabel = intent === "save" ? "save this job" : "apply for this role";
   const hasRequiredFields = mode === "sign-in"
     ? Boolean(fields.emailAddress.trim() && fields.password)
     : Boolean(fields.name.trim() && fields.emailAddress.trim() && fields.password && fields.confirmPassword);
@@ -103,13 +110,13 @@ function SignInOrRegisterModal({ jobId, onClose }: SignInOrRegisterModalProps) {
           <span aria-hidden="true">×</span>
         </button>
         <p className="pr-10 font-mono text-xs uppercase tracking-[0.18em] text-teal-400">
-          Continue your application
+          {intent === "save" ? "Continue saving this job" : "Continue your application"}
         </p>
         <h2 id="auth-modal-title" className="mt-2 font-display text-2xl font-semibold sm:text-3xl">
-          Sign in to apply.
+          {intent === "save" ? "Sign in to save this job." : "Sign in to apply."}
         </h2>
         <p className="mt-2 text-sm text-mute">
-          Sign in or create an account to continue to this role.
+          Sign in or create an account to {actionLabel}.
         </p>
 
         <div className="mt-6 grid grid-cols-2 border border-line" role="tablist" aria-label="Account options">

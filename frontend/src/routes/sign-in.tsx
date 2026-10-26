@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import axios from "axios";
 import { useState, type SubmitEvent } from "react";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 import { useSignIn } from "../features/auth/mutations";
 
 export const Route = createFileRoute('/sign-in')({
