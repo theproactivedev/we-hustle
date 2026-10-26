@@ -12,3 +12,4 @@ node_modules/
 /backend/node_modules/
 /backend/build/
 /backend/.env.local
+/backend/dist
