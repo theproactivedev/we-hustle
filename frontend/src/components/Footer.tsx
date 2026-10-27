@@ -1,7 +1,7 @@
 const cols = [
   { title: "Developers", links: [["Browse jobs", "/#jobs"], ["Register", "/register"], ["Sign In", "/sign-in"]] },
   { title: "Employers", links: [["Post a Job", "/jobs/new"], ["Pricing", "/pricing"], ["Hiring guide", "/guide"]] },
-  { title: "Stackhire", links: [["About", "/about"], ["Privacy", "/privacy"], ["Terms", "/terms"]] },
+  { title: "We Hustle", links: [["About", "/about"], ["Privacy", "/privacy"], ["Terms", "/terms"]] },
 ];
 
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="border-t border-line">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.5fr_repeat(3,1fr)]">
         <div>
-          <p className="font-display text-lg font-semibold text-teal-400">Stackhire</p>
+          <p className="font-display text-lg font-semibold text-teal-400">We Hustle</p>
           <p className="mt-2 max-w-xs text-sm text-mute">Jobs for software developers, listed by stack and salary.</p>
         </div>
         {cols.map((c) => (
@@ -21,7 +21,7 @@ export default function Footer() {
           </nav>
         ))}
       </div>
-      <p className="border-t border-line py-5 text-center font-mono text-xs text-mute">&copy; 2026 Stackhire</p>
+      <p className="border-t border-line py-5 text-center font-mono text-xs text-mute">&copy; 2026 We Hustle</p>
     </footer>
   );
 }

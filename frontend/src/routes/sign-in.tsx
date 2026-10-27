@@ -96,7 +96,7 @@ function SignInPage() {
             <div aria-hidden="true" className="absolute right-0 top-0 h-8 w-8 border-r border-t border-teal-400/60" />
             <div className="mb-7">
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-teal-400">Welcome back</p>
-              <h2 id="sign-in-heading" className="mt-2 font-display text-2xl font-semibold sm:text-3xl">Sign in to Stackhire.</h2>
+              <h2 id="sign-in-heading" className="mt-2 font-display text-2xl font-semibold sm:text-3xl">Sign in to We Hustle.</h2>
               <p className="mt-2 text-sm text-mute">Your saved jobs and fresh opportunities are right here.</p>
             </div>
 
@@ -145,7 +145,7 @@ function SignInPage() {
                 {!signInMutation.isPending && <span aria-hidden="true">→</span>}
               </button>
               <p className="text-center text-sm text-mute">
-                New to Stackhire? <Link to="/register" className="link text-teal-400">Create an account</Link>
+                New to We Hustle? <Link to="/register" className="link text-teal-400">Create an account</Link>
               </p>
             </form>
             <p className="mt-6 border-t border-line pt-4 font-mono text-[11px] leading-relaxed text-mute">
