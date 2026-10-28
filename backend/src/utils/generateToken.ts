@@ -12,7 +12,7 @@ const generateToken = (res: Response, userId: string) => {
   res.cookie("jwt", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Set to true in production
-    sameSite: "strict", // Adjust based on your needs
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // Adjust based on your needs
     maxAge: 1000 * 60 * 60, // 1 hour
   });
   return token;

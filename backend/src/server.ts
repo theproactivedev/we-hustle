@@ -16,6 +16,9 @@ config(); // Load environment variables from .env file
 const app = express();
 const port = process.env.PORT || 5001;
 
+// Backend: trust Render’s proxy. Render terminates HTTPS in front of your app, so Express thinks the request is plain HTTP and may refuse to set secure cookies:
+app.set("trust proxy", 1);
+
 // Middleware to parse JSON payloads
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +29,7 @@ app.use(
       "http://localhost:3000",
       process.env.FRONTEND_URL,
     ].filter(Boolean) as string[],
+    credentials: true,
   }),
 );
 
