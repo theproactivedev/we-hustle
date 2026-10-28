@@ -2,11 +2,12 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/index.css'
 import { routeTree } from './routeTree.gen.ts';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { createHashHistory, createRouter, RouterProvider } from '@tanstack/react-router';
 
 
 const router = createRouter({
   routeTree,
+  history: createHashHistory(),
 });
 
 declare module '@tanstack/react-router' {

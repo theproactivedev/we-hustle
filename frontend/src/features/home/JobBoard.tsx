@@ -1,6 +1,5 @@
 import { useState } from "react";
 import JobRow from "./JobRow";
-import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useCurrentUser } from "../auth/queries";
@@ -9,15 +8,10 @@ import { useMyApplications } from "../applications/queries";
 import { getSavedJobErrorMessage, useToggleSavedJob } from "../savedJobs/mutations";
 import { useMySavedJobs } from "../savedJobs/queries";
 import SignInOrRegisterModal from "../signInOrRegisterModal";
-import type { Job } from "../../dataTypes";
 import type { AuthModalState } from "../signInOrRegisterModal/types";
+import { fetchJobs } from "./api";
 
 const chamfer = "[clip-path:polygon(0_0,calc(100%-20px)_0,100%_20px,100%_100%,0_100%)]";
-
-const fetchJobs = async(): Promise<{ data: Job[] }> => {
-  const res = await axios.get("/api/jobs");
-  return res.data;
-}
 
 export default function JobBoard() {
   const { data: loadedJobs, error, isLoading } = useQuery({

@@ -1,4 +1,4 @@
-import axios from "axios";
+import { http } from "../../lib/http";
 import type { JobDetailsResponse, JobSearch, JobsResponse } from "./types";
 
 async function getJobs(filters: JobSearch): Promise<JobsResponse> {
@@ -15,12 +15,12 @@ async function getJobs(filters: JobSearch): Promise<JobsResponse> {
     params.minHourlyRate = filters.minHourlyRate;
   }
 
-  const { data } = await axios.get<JobsResponse>("/api/jobs", { params });
+  const { data } = await http.get<JobsResponse>("/api/jobs", { params });
   return data;
 }
 
 async function getJobById(jobId: string): Promise<JobDetailsResponse> {
-  const { data } = await axios.get<JobDetailsResponse>(`/api/jobs/${encodeURIComponent(jobId)}`);
+  const { data } = await http.get<JobDetailsResponse>(`/api/jobs/${encodeURIComponent(jobId)}`);
   return data;
 }
 

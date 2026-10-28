@@ -5,6 +5,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
 // https://vite.dev
 export default defineConfig({
+  base: '/we-hustle/',
   plugins: [
     react(),
     tailwindcss(), // <-- Add Tailwind plugin here

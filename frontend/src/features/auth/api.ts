@@ -1,18 +1,18 @@
-import axios from "axios";
+import { http } from "../../lib/http";
 import type { AuthUser, SignInPayload, SignInResponse } from "./types";
 
 async function getCurrentUser(): Promise<AuthUser | null> {
-  const { data } = await axios.get<{ message: string, data: { user: AuthUser } }>('/api/auth/me');
+  const { data } = await http.get<{ message: string, data: { user: AuthUser } }>('/api/auth/me');
   return data.data.user;
 }
 
 async function signIn(payload: SignInPayload): Promise<SignInResponse> {
-  const { data } = await axios.post<SignInResponse>("/api/auth/login", payload);
+  const { data } = await http.post<SignInResponse>("/api/auth/login", payload);
   return data;
 }
 
 async function logout() {
-  await axios.post('/api/auth/logout');
+  await http.post('/api/auth/logout');
 }
 
 export {

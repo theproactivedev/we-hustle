@@ -2,6 +2,7 @@ import { useState, type SubmitEvent } from "react";
 import Footer from "../../components/Footer";
 import { useRegister } from "./mutations";
 import { getRegisterErrorMessage, getRegisterValidationError } from "./utils";
+import { Link } from "@tanstack/react-router";
 
 function Register() {
   const [fields, setFields] = useState({
@@ -105,7 +106,7 @@ function Register() {
               <div role="status" className="border border-teal-400/40 bg-teal-400/10 p-5">
                 <p className="font-display text-lg font-semibold text-teal-400">You&apos;re on your way.</p>
                 <p className="mt-2 text-sm leading-relaxed text-ink">{mutation.data.message}</p>
-                <a href="/sign-in" className="btn btn-primary mt-5 w-full">Continue to sign in</a>
+                <Link to="/sign-in" className="btn btn-primary mt-5 w-full">Continue to sign in</Link>
               </div>
             ) : (
               <form className="space-y-4" noValidate onSubmit={handleSubmit}>
@@ -181,7 +182,7 @@ function Register() {
                   {!mutation.isPending && <span aria-hidden="true">→</span>}
                 </button>
                 <p className="text-center text-sm text-mute">
-                  Already have an account? <a href="/sign-in" className="link text-teal-400">Sign in</a>
+                  Already have an account? <Link to="/sign-in" className="link text-teal-400">Sign in</Link>
                 </p>
               </form>
             )}
