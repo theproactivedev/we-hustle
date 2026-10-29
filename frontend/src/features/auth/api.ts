@@ -8,11 +8,13 @@ async function getCurrentUser(): Promise<AuthUser | null> {
 
 async function signIn(payload: SignInPayload): Promise<SignInResponse> {
   const { data } = await http.post<SignInResponse>("/api/auth/login", payload);
+  localStorage.setItem("token", data.data.token);
   return data;
 }
 
 async function logout() {
   await http.post('/api/auth/logout');
+  localStorage.removeItem("token");
 }
 
 export {

@@ -4,14 +4,18 @@ import {
 } from "@tanstack/react-query";
 import { getCurrentUser } from "./api";
 
-export const currentUserQueryOptions = queryOptions({
-  queryKey: ["auth", "me"] as const,
-  queryFn: getCurrentUser,
-  staleTime: 60_000,
-  retry: false,
-  refetchOnWindowFocus: false,
-});
+export const currentUserQueryOptions = () => {
+  const hasToken = Boolean(localStorage.getItem('token'));
+  return queryOptions({
+    queryKey: ["auth", "me"] as const,
+    queryFn: getCurrentUser,
+    enabled: hasToken,
+    staleTime: 60_000,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+}
 
 export function useCurrentUser() {
-  return useQuery(currentUserQueryOptions);
+  return useQuery(currentUserQueryOptions());
 }
