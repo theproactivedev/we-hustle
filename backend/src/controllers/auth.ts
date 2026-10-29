@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import type { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
 import { prisma } from "../lib/prisma.js";
 import { generateToken } from "../utils/generateToken.js";
@@ -31,7 +30,7 @@ const register = async(req: Request, res: Response) => {
     });
 
     // create JWT
-    const token = generateToken(res, newUser.id);
+    const token = generateToken(newUser.id);
     res.status(201).json(
       {
         message: "Login successful",
@@ -68,7 +67,7 @@ const login = async(req: Request, res: Response) => {
     }
 
     // create JWT
-    const token = generateToken(res, user.id);
+    const token = generateToken(user.id);
     res.status(200).json({ message: "Login successful", data: {
       user:{
         id: user.id,
@@ -84,41 +83,27 @@ const login = async(req: Request, res: Response) => {
 };
 
 const logout = (req: Request, res: Response) => {
-  res.cookie("jwt", "", {
-    httpOnly: true,
-    expires: new Date(0), // Set the cookie to expire in the past
-  });
   res.status(200).json({
     message: "Logged out successfully",
   });
 };
 
 const getCurrentUser = async (req: Request, res: Response) => {
-  let token = null;
-  const authHeader = req.headers.authorization;
-
-  if(authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  } else if(req.cookies && req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
-
-  if(!token) {
+  const userId = req.user?.id;
+  if(!userId) {
     return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-
     const user = await prisma.user.findUnique({
-      where: { id: (decoded as { id: string }).id },
+      where: { id: userId },
     });
 
     if(!user) {
-      res.status(401).json({ message: "Unauthorized: User no longer exists" });
+      return res.status(401).json({ message: "Unauthorized: User no longer exists" });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Authenticated user successfully!",
       data: {
         user:{
@@ -128,9 +113,9 @@ const getCurrentUser = async (req: Request, res: Response) => {
         },
       },
     });
-  } catch(error) {
-    console.error("Error verifying token:", error);
-    return res.status(401).json({ message: "Internal Server Error" });
+  } catch(err) {
+    console.error(err);
+    return res.status(500).json({ message: "Error getting the current user" });
   }
 };
 
