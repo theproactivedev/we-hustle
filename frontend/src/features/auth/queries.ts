@@ -3,9 +3,10 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { getCurrentUser } from "./api";
+import { getAuthToken } from "./token";
 
 export const currentUserQueryOptions = () => {
-  const hasToken = Boolean(localStorage.getItem('token'));
+  const hasToken = Boolean(getAuthToken());
   return queryOptions({
     queryKey: ["auth", "me"] as const,
     queryFn: getCurrentUser,
